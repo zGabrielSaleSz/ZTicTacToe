@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TicTacToe.Exceptions;
 using TicTacToe.Model.Board;
 using TicTacToe.Model.Players;
 
@@ -12,10 +13,19 @@ namespace TicTacToe.Model
     {
         public Game(Player playerX, Player playerO, int victoriesToWin) 
         {
+            ScoreBoard = new ScoreBoard();
             RespectiveIcons = new Dictionary<IconType, Player>();
             RespectiveIcons.Add(IconType.Cross, playerX);
             RespectiveIcons.Add(IconType.Circle, playerO);
+
+            ScoreBoard.AddPlayer(playerX);
+            ScoreBoard.AddPlayer(playerO);
+            ScoreBoard.RequestUpdate();
         }
+        public int CurrentRound { get; private set; }
+
+        private TicTacToeBoard Board;
+        public ScoreBoard ScoreBoard { get; private set; }
 
         private Dictionary<IconType, Player> RespectiveIcons;
 
@@ -32,23 +42,40 @@ namespace TicTacToe.Model
 
         private void StartRound()
         {
-            TicTacToeBoard board = new TicTacToeBoard();
-            ScoreBoard scoreBoard = new ScoreBoard();
-            while (!board.Finished)
+            Board = new TicTacToeBoard();
+            while (!Board.Finished)
             {
+                bool validMove = false;
                 Player player = GetNextPlayer();
-                Play play = player.RequestPlay(board);
-                play.Icon = Turn;
-                board.Play(play);
+                while (!validMove)
+                {
+                    Play play = player.RequestPlay(Board);
+                    play.Icon = Turn;
+                    try
+                    {
+                        Board.Play(play);
+                        validMove = true;
+                    }
+                    catch (InvalidPlayException _)
+                    {
+                        player.NotifyInvalidPlay();
+                    }
+                    catch
+                    {
+                        throw;
+                    }
+                }
+                ChangeTurn();
+
             }
-            if (board.IsTied())
+            if (Board.IsTied())
             {
-                scoreBoard.AddTie();
+                ScoreBoard.AddTie();
             }
             else 
             {
-                IconType winner = board.Winner.Value;
-
+                IconType winner = Board.Winner.Value;
+                ScoreBoard.AddVictory(RespectiveIcons[winner]);
             }
         }
 
@@ -60,15 +87,15 @@ namespace TicTacToe.Model
         private Player GetNextPlayer()
         {
             Player player = RespectiveIcons[Turn];
-            ChangeTurn();
             return player;
         }
 
         private void ChangeTurn()
         {
-            int nextTurn = (int)Turn + 1;
-            int maxIcons = Enum.GetValues(typeof(IconType)).Cast<int>().Max();
-            Turn = (IconType)(nextTurn/maxIcons);
+            if (Turn == IconType.Circle)
+                Turn = IconType.Cross;
+            else
+                Turn = IconType.Circle;
         }
     }
 }

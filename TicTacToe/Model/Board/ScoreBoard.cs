@@ -27,12 +27,17 @@ namespace TicTacToe.Model.Board
             if (!Victories.ContainsKey(player))
                 AddPlayer(player);
             Victories[player]++;
-            OnUpdate();
+            RequestUpdate();
         }
         public void AddTie()
         {
             this.Ties++;
-            OnUpdate();
+            RequestUpdate();
+        }
+        public void RequestUpdate()
+        {
+            if (OnUpdate != null)
+                OnUpdate();
         }
     }
 }

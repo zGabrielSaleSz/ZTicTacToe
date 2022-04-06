@@ -36,5 +36,10 @@ namespace TicTacToe.ConsoleApp
         {
             return Name;
         }
+
+        public override void NotifyInvalidPlay()
+        {
+            Console.WriteLine("Invalid play attempt, please check the Board before your next play!");
+        }
     }
 }

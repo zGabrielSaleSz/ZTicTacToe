@@ -44,6 +44,8 @@ namespace TicTacToe.Model.Board
         {
             if (Finished)
                 throw new GameFinishedException();
+            if(play.Row >= Size || play.Column >= Size)
+                throw new InvalidPlayException();
             if (BoardPlaces[play.Row, play.Column].HasValue)
                 throw new InvalidPlayException();
 
