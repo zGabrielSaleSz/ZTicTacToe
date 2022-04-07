@@ -19,12 +19,16 @@ namespace TicTacToe.Model.Board
 
         public TicTacToeBoard(int size = 3)
         {
+            Size = size;
+            Clear();
+        }
+
+        public void Clear()
+        {
             Finished = false;
             Tie = false;
-            Size = size;
             Winner = null;
-            Initialize(size);
-
+            Initialize(Size);
         }
 
         private void Initialize(int size)
@@ -39,18 +43,33 @@ namespace TicTacToe.Model.Board
             }
         }
 
-       
         public void Play(Play play)
         {
-            if (Finished)
-                throw new GameFinishedException();
-            if(play.Row >= Size || play.Column >= Size)
-                throw new InvalidPlayException();
-            if (BoardPlaces[play.Row, play.Column].HasValue)
-                throw new InvalidPlayException();
+            VerifyIfGameWasFinished();
+            VerifyCordinatesIsOutOfBounds(play.Row, play.Column);
+            VerifyCordinatesHasValue(play.Row, play.Column);
 
             BoardPlaces[play.Row, play.Column] = play.Icon;
+
             UpdateWinner();
+        }
+
+        private void VerifyCordinatesHasValue(int row, int column)
+        {
+            if (BoardPlaces[row, column].HasValue)
+                throw new InvalidPlayException();
+        }
+
+        private void VerifyCordinatesIsOutOfBounds(int row, int column)
+        {
+            if (row < 0 || row >= Size || column < 0 || column >= Size)
+                throw new InvalidPlayException();
+        }
+
+        private void VerifyIfGameWasFinished()
+        {
+            if (Finished == true)
+                throw new GameFinishedException();
         }
 
         private void UpdateWinner()
@@ -61,22 +80,11 @@ namespace TicTacToe.Model.Board
             CheckAvailablePlays();
         }
 
-        private void CheckAvailablePlays()
-        {
-            foreach(var i in  Enumerable.Range(0, GetLastIndex()))
-            {
-                foreach(var j in Enumerable.Range(0, GetLastIndex()))
-                {
-                    if (!BoardPlaces[i, j].HasValue)
-                        return;
-                }
-            }
-            SetTie();
-        }
+        
 
         private void CheckForWinnerInRows()
         {
-            foreach (int i in Enumerable.Range(0, GetLastIndex()))
+            foreach (int i in Enumerable.Range(0, Size))
             {
                 HasWinnerInRow(i);
                 if (Finished)
@@ -86,7 +94,7 @@ namespace TicTacToe.Model.Board
 
         private void CheckForWinnerInColumns()
         {
-            foreach (int i in Enumerable.Range(0, GetLastIndex()))
+            foreach (int i in Enumerable.Range(0, Size))
             {
                 HasWinnerInColumn(i);
                 if (Finished)
@@ -108,7 +116,7 @@ namespace TicTacToe.Model.Board
                 return;
 
             IconType expectedWinner = BoardPlaces[0, 0].Value;
-            foreach (int i in Enumerable.Range(1, GetLastIndex()))
+            foreach (int i in Enumerable.Range(0, Size))
             {
                 if (expectedWinner != BoardPlaces[i, i])
                     return;
@@ -122,7 +130,7 @@ namespace TicTacToe.Model.Board
             if (!BoardPlaces[0, lastIndex].HasValue)
                 return;
             IconType expectedWinner = BoardPlaces[0, lastIndex].Value;
-            foreach (int i in Enumerable.Range(1, GetLastIndex()))
+            foreach (int i in Enumerable.Range(0, Size))
             {
                 int reversedIndex = lastIndex - i;
                 if (expectedWinner != BoardPlaces[i, reversedIndex])
@@ -131,13 +139,26 @@ namespace TicTacToe.Model.Board
             SetWinner(expectedWinner);
         }
 
+        private void CheckAvailablePlays()
+        {
+            foreach (var i in Enumerable.Range(0, Size))
+            {
+                foreach (var j in Enumerable.Range(0, Size))
+                {
+                    if (!BoardPlaces[i, j].HasValue)
+                        return;
+                }
+            }
+            SetTie();
+        }
+
         private void HasWinnerInRow(int rowNumber)
         {
             if (!BoardPlaces[rowNumber, 0].HasValue)
                 return;
 
             IconType expectedWinner = BoardPlaces[rowNumber, 0].Value;
-            foreach(int i in Enumerable.Range(1, GetLastIndex())) 
+            foreach(int i in Enumerable.Range(0, Size)) 
             {
                 if (expectedWinner != BoardPlaces[rowNumber, i])
                     return;
@@ -151,7 +172,7 @@ namespace TicTacToe.Model.Board
                 return;
 
             IconType expectedWinner = BoardPlaces[0, columnNumber].Value;
-            foreach (int i in Enumerable.Range(1, GetLastIndex()))
+            foreach (int i in Enumerable.Range(0, Size))
             {
                 if (expectedWinner != BoardPlaces[i, columnNumber])
                     return;
@@ -182,6 +203,7 @@ namespace TicTacToe.Model.Board
 
         private void SetTie()
         {
+            Tie = true;
             Finished = true;
         }
     }

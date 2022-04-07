@@ -17,5 +17,7 @@ namespace TicTacToe.Model.Players
         public abstract Play RequestPlay(TicTacToeBoard board);
         public abstract string GetName();
         public abstract void NotifyInvalidPlay();
+        public abstract void NotifyRoundResult(RoundResult roundResult);
+        public abstract void NotifyRoundChanged(int round);
     }
 }

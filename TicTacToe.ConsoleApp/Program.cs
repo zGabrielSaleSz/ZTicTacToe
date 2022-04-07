@@ -10,8 +10,20 @@ namespace TicTacToe.ConsoleApp
     {
         static void Main(string[] args)
         {
-            //TicTacToeBoard board = new TicTacToeBoard();
+            //TicTacToeBoard board = new TicTacToeBoard(5);
             //BoardDrawer boardDrawer = new BoardDrawer(board);
+
+            //board.Play(new Play(0, 0, IconType.Circle));
+            //board.Play(new Play(1, 1, IconType.Circle));
+            //board.Play(new Play(2, 2, IconType.Circle));
+            //board.Play(new Play(3, 3, IconType.Circle));
+            //board.Play(new Play(4, 4, IconType.Circle));
+            //if(board.IsFinished() && !board.IsTied())
+            //{
+            //    Console.WriteLine("There's a Winner " + nameof(board.Winner));
+            //}
+            //boardDrawer.DisplayConsole();
+
 
             //ScoreBoard scoreBoard = new ScoreBoard();
             //ScoreBoardDrawer scoreBoardDrawer = new ScoreBoardDrawer(scoreBoard);

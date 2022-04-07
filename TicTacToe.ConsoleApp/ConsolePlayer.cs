@@ -41,5 +41,26 @@ namespace TicTacToe.ConsoleApp
         {
             Console.WriteLine("Invalid play attempt, please check the Board before your next play!");
         }
+
+        public override void NotifyRoundChanged(int round)
+        {
+            Console.WriteLine($"Round {round} started!");
+        }
+
+        public override void NotifyRoundResult(RoundResult roundResult)
+        {
+            if(roundResult == RoundResult.Victory)
+            {
+                Console.WriteLine($"Congratulations {Name}, You won the last round!");
+            }
+            else if(roundResult == RoundResult.Defeat)
+            {
+                Console.WriteLine($"No way {Name}!! You lost the last round!");
+            }
+            else
+            {
+                Console.WriteLine("Well, there is a Tie!");
+            }
+        }
     }
 }

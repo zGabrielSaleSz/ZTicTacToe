@@ -18,7 +18,7 @@ namespace TicTacToe.ConsoleApp.Drawers
         public void DisplayConsole()
         {
             List<string> currentRow = new List<string>(Board.Size);
-            Console.WriteLine("-----");
+            Console.WriteLine("-----------------------------");
             for (int row = 0; row < Board.Size; row++)
             {
                 for (int column = 0; column < Board.Size; column++)
@@ -26,7 +26,7 @@ namespace TicTacToe.ConsoleApp.Drawers
                     currentRow.Add(Board.BoardPlaces[row, column].GetDescription());
                 }
                 DisplayRow(currentRow);
-                Console.WriteLine("-----");
+                Console.WriteLine("-----------------------------");
                 currentRow.Clear();
             }
         }
